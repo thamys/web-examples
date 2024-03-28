@@ -2,9 +2,10 @@ import { Hex } from 'viem'
 import { SessionTypes } from '@walletconnect/types'
 import { Chain, allowedChains } from '@/consts/smartAccounts'
 import { KernelSmartAccountLib } from '@/lib/smart-accounts/KernelSmartAccountLib'
-import { sepolia } from 'viem/chains'
+import { sepolia, polygonMumbai } from 'viem/chains'
 import { SafeSmartAccountLib } from '@/lib/smart-accounts/SafeSmartAccountLib'
 import { SmartAccountLib } from '@/lib/smart-accounts/SmartAccountLib'
+import { LumxSmartAccountLib } from '@/lib/smart-accounts/LumxSmartAccountLib'
 
 export type UrlConfig = {
   chain: Chain
@@ -66,6 +67,7 @@ export function supportedAddressPriority(
     const chainId = id.replace(`${nameSpaceKey}:`, '')
     return providedAllowedChains.map(chain => chain?.id.toString()).includes(chainId)
   })
+
   const chainIdParsed = allowedChainIds[0].replace(`${nameSpaceKey}:`, '')
   const chain = providedAllowedChains.find(chain => chain?.id.toString() === chainIdParsed)!
   if (allowedChainIds.length > 0 && smartAccountAddress) {
@@ -81,7 +83,7 @@ export function supportedAddressPriority(
 
 export const kernelAllowedChains = [sepolia]
 export const safeAllowedChains = [sepolia]
-export let smartAccountWallets: Record<string, SmartAccountLib | KernelSmartAccountLib> = {}
+export let smartAccountWallets: Record<string, SmartAccountLib | KernelSmartAccountLib | LumxSmartAccountLib> = {}
 
 export function isAllowedKernelChain(chainId: number): boolean {
   return kernelAllowedChains.some(chain => chain.id == chainId)
@@ -114,5 +116,22 @@ export async function createOrRestoreSafeSmartAccount(privateKey: string) {
   }
   return {
     safeSmartAccountAddress: address
+  }
+}
+
+export function isAllowedLumxChain(chainId: number): boolean {
+  return safeAllowedChains.some(chain => chain.id == chainId)
+}
+
+export async function createOrRestoreLumxSmartAccount(walletId: string) {
+  const lib = new LumxSmartAccountLib({ walletId: undefined, chain: polygonMumbai})
+  await lib.init()
+  const address = lib.getAddress()
+  const key = `${sepolia.id}:${address}`
+  if (!smartAccountWallets[key]) {
+    smartAccountWallets[key] = lib
+  }
+  return {
+    lumxSmartAccountAddress: address
   }
 }

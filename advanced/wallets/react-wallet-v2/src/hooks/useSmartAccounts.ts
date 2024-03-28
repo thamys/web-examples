@@ -1,6 +1,7 @@
 import SettingsStore from '@/store/SettingsStore'
 import {
   createOrRestoreKernelSmartAccount,
+  createOrRestoreLumxSmartAccount,
   createOrRestoreSafeSmartAccount,
   smartAccountWallets
 } from '@/utils/SmartAccountUtil'
@@ -8,7 +9,7 @@ import {
 import { useSnapshot } from 'valtio'
 
 export default function useSmartAccounts() {
-  const { smartAccountEnabled, kernelSmartAccountEnabled, safeSmartAccountEnabled } = useSnapshot(
+  const { smartAccountEnabled, kernelSmartAccountEnabled, safeSmartAccountEnabled, lumxSmartAccountEnabled } = useSnapshot(
     SettingsStore.state
   )
 
@@ -21,6 +22,10 @@ export default function useSmartAccounts() {
       if (safeSmartAccountEnabled) {
         const { safeSmartAccountAddress } = await createOrRestoreSafeSmartAccount(privateKey)
         SettingsStore.setSafeSmartAccountAddress(safeSmartAccountAddress)
+      }
+      if (lumxSmartAccountEnabled) {
+        const { lumxSmartAccountAddress } = await createOrRestoreLumxSmartAccount(privateKey)
+        SettingsStore.setLumxSmartAccountAddress(lumxSmartAccountAddress)
       }
     }
   }

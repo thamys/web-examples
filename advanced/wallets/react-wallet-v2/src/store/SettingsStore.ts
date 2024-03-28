@@ -5,6 +5,7 @@ const TEST_NETS_ENABLED_KEY = 'TEST_NETS'
 const SMART_ACCOUNTS_ENABLED_KEY = 'SMART_ACCOUNTS'
 const ZERO_DEV_SMART_ACCOUNTS_ENABLED_KEY = 'ZERO_DEV_SMART_ACCOUNTS'
 const SAFE_SMART_ACCOUNTS_ENABLED_KEY = 'SAFE_SMART_ACCOUNTS'
+const LUMX_SMART_ACCOUNTS_ENABLED_KEY = 'LUMX_SMART_ACCOUNTS'
 
 /**
  * Types
@@ -23,6 +24,7 @@ interface State {
   kadenaAddress: string
   kernelSmartAccountAddress: string
   safeSmartAccountAddress: string
+  lumxSmartAccountAddress: string
   relayerRegionURL: string
   activeChainId: string
   currentRequestVerifyContext?: Verify.Context
@@ -31,6 +33,7 @@ interface State {
   smartAccountEnabled: boolean
   kernelSmartAccountEnabled: boolean
   safeSmartAccountEnabled: boolean
+  lumxSmartAccountEnabled: boolean
 }
 
 /**
@@ -54,6 +57,7 @@ const state = proxy<State>({
   kadenaAddress: '',
   kernelSmartAccountAddress: '',
   safeSmartAccountAddress: '',
+  lumxSmartAccountAddress: '',
   relayerRegionURL: '',
   sessions: [],
   smartAccountSponsorshipEnabled: false,
@@ -68,7 +72,8 @@ const state = proxy<State>({
   safeSmartAccountEnabled:
     typeof localStorage !== 'undefined'
       ? Boolean(localStorage.getItem(SAFE_SMART_ACCOUNTS_ENABLED_KEY))
-      : false
+      : false,
+  lumxSmartAccountEnabled: typeof localStorage !== 'undefined' ? Boolean(localStorage.getItem(LUMX_SMART_ACCOUNTS_ENABLED_KEY)) : false
 })
 
 /**
@@ -124,6 +129,9 @@ const SettingsStore = {
   setSafeSmartAccountAddress(smartAccountAddress: string) {
     state.safeSmartAccountAddress = smartAccountAddress
   },
+  setLumxSmartAccountAddress(smartAccountAddress: string) {
+    state.lumxSmartAccountAddress = smartAccountAddress
+  },
 
   setActiveChainId(value: string) {
     state.activeChainId = value
@@ -176,6 +184,15 @@ const SettingsStore = {
       localStorage.setItem(SAFE_SMART_ACCOUNTS_ENABLED_KEY, 'YES')
     } else {
       localStorage.removeItem(SAFE_SMART_ACCOUNTS_ENABLED_KEY)
+    }
+  },
+
+  toggleLumxSmartAccountsEnabled() {
+    state.lumxSmartAccountEnabled = !state.lumxSmartAccountEnabled
+    if (state.lumxSmartAccountEnabled) {
+      localStorage.setItem(LUMX_SMART_ACCOUNTS_ENABLED_KEY, 'YES')
+    } else {
+      localStorage.removeItem(LUMX_SMART_ACCOUNTS_ENABLED_KEY)
     }
   }
 }

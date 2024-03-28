@@ -26,7 +26,8 @@ export default function SettingsPage() {
     kadenaAddress,
     smartAccountEnabled,
     kernelSmartAccountEnabled,
-    safeSmartAccountEnabled
+    safeSmartAccountEnabled,
+    lumxSmartAccountEnabled
   } = useSnapshot(SettingsStore.state)
 
   return (
@@ -75,6 +76,18 @@ export default function SettingsPage() {
 
               {smartAccountEnabled ? (
                 <>
+                 <Text h4 css={{ marginBottom: '$5', marginTop: '$5' }}>
+                    Lumx Smart Account
+                  </Text>
+                  <Row justify="space-between" align="center">
+                    <Switch
+                      checked={lumxSmartAccountEnabled}
+                      onChange={SettingsStore.toggleLumxSmartAccountsEnabled}
+                      data-testid="settings-toggle-smart-account-sponsorship"
+                    />
+                    <Text>{kernelSmartAccountEnabled ? 'Enabled' : 'Disabled'}</Text>
+                  </Row>
+
                   <Text h4 css={{ marginBottom: '$5', marginTop: '$5' }}>
                     ZeroDev Smart Account
                   </Text>
@@ -183,7 +196,7 @@ export default function SettingsPage() {
         Kadena Secret Key
       </Text>
       <Card bordered borderWeight="light" css={{ wordWrap: 'break-word' }}>
-        <Text css={{ fontFamily: '$mono' }}>{kadenaWallets[kadenaAddress].getSecretKey()}</Text>
+        <Text css={{ fontFamily: '$mono' }}>{kadenaWallets[kadenaAddress]?.getSecretKey()}</Text>
       </Card>
 
       <Text h4 css={{ marginTop: '$10', marginBottom: '$5' }}></Text>
